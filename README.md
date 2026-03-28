@@ -1,4 +1,4 @@
-# habit-tracker
+# Habit-Tracker
 
 A minimal web app to track daily habits and build consistency.
 
