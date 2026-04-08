@@ -5,13 +5,14 @@ A minimal web app to track daily habits and build consistency
 ## Contents
 - [Installation](#installation--setup)
 - [How to run](#how-to-run)
-- [How to contribute](#contributing)
+- [How to contribute](CONTRIBUTING.md)
 
 ---
 ## Tech Stack
 - Frontend: `React`
 - Server: `Express`
 - Database: `MongoDB`
+- Auth: `JWT`
 
 ## ✅ Feature TODOs*
 
@@ -60,6 +61,7 @@ Features planned for the app are listed below; check boxes track progress.
 ```bash
 # 1. Clone the repo
 git clone https://github.com/quantum2code/habit-tracker
+
 cd habit-tracker
 
 # 2. Install dependencies
@@ -84,12 +86,5 @@ npm install
 ├── package.json
 └── README.md
  ```
-
-## Contributing
-- Fork the project
-- Create your feature branch
-- Commit your changes
-- Push and open a Pull Request
-#### *For features to implement check out the [feature issues](https://github.com/quantum2code/habit-tracker/issues)*
 
 #### *For any query ask us on our discord channel*
