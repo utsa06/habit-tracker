@@ -15,15 +15,25 @@ export default function Habits() {
   const [showModal, setShowModal] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState(null);
 
-  function openCreate() { setModalHabit(null); setShowModal(true); }
-  function openEdit(habit) { setModalHabit(habit); setShowModal(true); }
-  function closeModal() { setShowModal(false); setModalHabit(null); }
+  function openCreate() {
+    setModalHabit(null);
+    setShowModal(true);
+  }
+
+  function openEdit(habit) {
+    setModalHabit(habit);
+    setShowModal(true);
+  }
+
+  function closeModal() {
+    setShowModal(false);
+    setModalHabit(null);
+  }
 
   async function handleSave(data) {
     if (modalHabit) await updateHabit(modalHabit._id, data);
     else await createHabit(data);
   }
-
 
   async function handleDelete() {
     await deleteHabit(deleteTarget._id);
@@ -40,16 +50,18 @@ export default function Habits() {
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-6">
+      <div className="mb-6 flex items-center justify-between">
         <div>
           <h1 className="text-xl font-bold text-surface-800">My Habits</h1>
-          <p className="text-[13px] text-surface-400 mt-1">{habits.length} habit{habits.length !== 1 ? "s" : ""} tracked</p>
+          <p className="mt-1 text-[13px] text-surface-400">
+            {habits.length} habit{habits.length !== 1 ? "s" : ""} tracked
+          </p>
         </div>
         <button
           onClick={openCreate}
-          className="cursor-pointer flex items-center gap-1.5 bg-accent-500 hover:bg-accent-600 text-white text-[13px] font-medium px-4 py-2.5 rounded-xl transition-colors shadow-sm shadow-accent-200"
+          className="cursor-pointer flex items-center gap-1.5 rounded-xl bg-accent-500 px-4 py-2.5 text-[13px] font-medium text-white shadow-sm shadow-accent-200 transition-colors hover:bg-accent-600"
         >
-          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
           </svg>
           New habit
@@ -57,11 +69,13 @@ export default function Habits() {
       </div>
 
       {error && (
-        <div className="mb-4 text-[13px] text-danger-500 bg-danger-400/10 border border-danger-400/20 rounded-xl px-4 py-2.5">{error}</div>
+        <div className="mb-4 rounded-xl border border-danger-400/20 bg-danger-400/10 px-4 py-2.5 text-[13px] text-danger-500">
+          {error}
+        </div>
       )}
 
       <div className="flex gap-5">
-        <div className="flex-[7] min-w-0">
+        <div className="min-w-0 flex-[7]">
           {habits.length === 0 ? (
             <EmptyHabits onAdd={openCreate} />
           ) : (
@@ -78,30 +92,37 @@ export default function Habits() {
             </div>
           )}
         </div>
-        <div className="flex-[3] min-w-0">
+
+        <div className="min-w-0 flex-[3]">
           <NotesPanel notes={notes} isLoading={notesLoading} onCreate={createNote} onDelete={deleteNote} />
         </div>
       </div>
 
       {showModal && <HabitModal habit={modalHabit} onSave={handleSave} onClose={closeModal} />}
-      {deleteTarget && <DeleteConfirm habitName={deleteTarget.name} onConfirm={handleDelete} onCancel={() => setDeleteTarget(null)} />}
+      {deleteTarget && (
+        <DeleteConfirm
+          habitName={deleteTarget.name}
+          onConfirm={handleDelete}
+          onCancel={() => setDeleteTarget(null)}
+        />
+      )}
     </div>
   );
 }
 
 function EmptyHabits({ onAdd }) {
   return (
-    <div className="bg-white rounded-2xl border border-surface-200 p-12 text-center">
-      <div className="mx-auto mb-4 w-14 h-14 rounded-2xl bg-surface-100 flex items-center justify-center">
-        <svg className="w-6 h-6 text-surface-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+    <div className="rounded-2xl border border-surface-200 bg-white p-12 text-center">
+      <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-surface-100">
+        <svg className="h-6 w-6 text-surface-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
         </svg>
       </div>
-      <p className="text-[14px] text-surface-600 font-medium mb-1">No habits yet</p>
-      <p className="text-[12px] text-surface-400 mb-4">Start building your routine by adding your first habit.</p>
+      <p className="mb-1 text-[14px] font-medium text-surface-600">No habits yet</p>
+      <p className="mb-4 text-[12px] text-surface-400">Start building your routine by adding your first habit.</p>
       <button
         onClick={onAdd}
-        className="cursor-pointer text-[13px] font-medium text-accent-600 hover:text-accent-700 transition-colors"
+        className="cursor-pointer text-[13px] font-medium text-accent-600 transition-colors hover:text-accent-700"
       >
         Create your first habit
       </button>

@@ -3,7 +3,7 @@ import Habit from "../models/Habit.js";
 
 const router = Router();
 
-// GET /api/habits — list all habits for the authenticated user
+// GET /api/habits - list all habits for the authenticated user
 router.get("/", async (req, res) => {
   try {
     const habits = await Habit.find({ userId: req.userId }).sort({
@@ -15,7 +15,7 @@ router.get("/", async (req, res) => {
   }
 });
 
-// POST /api/habits — create a new habit
+// POST /api/habits - create a new habit
 router.post("/", async (req, res) => {
   try {
     const { name, schedule, goal } = req.body;
@@ -37,11 +37,12 @@ router.post("/", async (req, res) => {
       const message = Object.values(err.errors)[0].message;
       return res.status(400).json({ error: message });
     }
+
     res.status(500).json({ error: "Failed to create habit" });
   }
 });
 
-// PUT /api/habits/:id — update an existing habit
+// PUT /api/habits/:id - update an existing habit
 router.put("/:id", async (req, res) => {
   try {
     const { name, schedule, goal } = req.body;
@@ -71,11 +72,12 @@ router.put("/:id", async (req, res) => {
       const message = Object.values(err.errors)[0].message;
       return res.status(400).json({ error: message });
     }
+
     res.status(500).json({ error: "Failed to update habit" });
   }
 });
 
-// DELETE /api/habits/:id — delete a habit
+// DELETE /api/habits/:id - delete a habit
 router.delete("/:id", async (req, res) => {
   try {
     const habit = await Habit.findOneAndDelete({
@@ -93,7 +95,7 @@ router.delete("/:id", async (req, res) => {
   }
 });
 
-// PATCH /api/habits/:id/complete — mark today as completed (once per day, idempotent)
+// PATCH /api/habits/:id/complete - toggle today's completion
 router.patch("/:id/complete", async (req, res) => {
   try {
     const today = new Date().toISOString().split("T")[0];
@@ -103,15 +105,17 @@ router.patch("/:id/complete", async (req, res) => {
       return res.status(404).json({ error: "Habit not found" });
     }
 
-    if (habit.completions.includes(today)) {
-      return res.json(habit);
+    const index = habit.completions.indexOf(today);
+    if (index === -1) {
+      habit.completions.push(today);
+    } else {
+      habit.completions.splice(index, 1);
     }
 
-    habit.completions.push(today);
     await habit.save();
     res.json(habit);
   } catch (err) {
-    res.status(500).json({ error: "Failed to mark completion" });
+    res.status(500).json({ error: "Failed to toggle completion" });
   }
 });
 
