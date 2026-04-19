@@ -35,7 +35,7 @@ export default function HabitModal({ habit, onSave, onClose }) {
     if (hasReminder && !reminderTime) { setError("Reminder time is required"); return; }
     setIsSaving(true);
     try {
-      await onSave({ name: name.trim(), schedule, goal: goal.trim(), hasReminder, reminderTime });
+      await onSave({ name: name.trim(), schedule, goal: goal.trim(), hasReminder, reminderTime: hasReminder ? reminderTime : "" });
       onClose();
     } catch (err) {
       setError(err.message);

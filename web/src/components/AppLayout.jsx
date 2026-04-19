@@ -10,17 +10,21 @@ export default function AppLayout() {
   const { token } = useAuth();
   const location = useLocation();
   const [reminders, setReminders] = useState([]);
-  const [activeAlert, setActiveAlert] = useState(null);
+  const [alertQueue, setAlertQueue] = useState([]);
   const alertedRef = useRef(new Set());
 
   useEffect(() => {
     async function fetchReminders() {
-      if (!token) return;
+      if (!token) {
+        setReminders([]);
+        return;
+      }
       try {
         const data = await apiRequest("/api/habits/reminders", { token });
         setReminders(data);
       } catch (err) {
         console.error("Failed to fetch reminders", err);
+        setReminders([]);
       }
     }
     fetchReminders();
@@ -43,7 +47,7 @@ export default function AppLayout() {
         if (habit.reminderTime === currentTimeStr) {
           const alertKey = `${habit._id}-${currentTimeStr}`;
           if (!alertedRef.current.has(alertKey)) {
-            setActiveAlert(habit);
+            setAlertQueue((prev) => [...prev, habit]);
             alertedRef.current.add(alertKey);
           }
         }
@@ -53,12 +57,14 @@ export default function AppLayout() {
     return () => clearInterval(interval);
   }, [reminders]);
 
+  const activeAlert = alertQueue[0] || null;
+
   return (
     <div className="min-h-screen bg-surface-50">
       {activeAlert && (
         <ReminderAlert 
           habitName={activeAlert.name} 
-          onClose={() => setActiveAlert(null)} 
+          onClose={() => setAlertQueue((prev) => prev.slice(1))} 
         />
       )}
       <Sidebar />
