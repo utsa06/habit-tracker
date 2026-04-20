@@ -3,7 +3,7 @@ import Habit from "../models/Habit.js";
 
 const router = Router();
 
-// GET /api/habits — list all habits for the authenticated user
+// GET /api/habits - list all habits for the authenticated user
 router.get("/", async (req, res) => {
   try {
     const habits = await Habit.find({ userId: req.userId }).sort({
@@ -15,19 +15,19 @@ router.get("/", async (req, res) => {
   }
 });
 
-// GET /api/habits/reminders — list habits with reminders for the current day
+// GET /api/habits/reminders - list habits with reminders for the current day
 router.get("/reminders", async (req, res) => {
   try {
-    const habits = await Habit.find({ 
+    const habits = await Habit.find({
       userId: req.userId,
-      hasReminder: true
+      hasReminder: true,
     });
 
     const validDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
     const todayStr = validDays[new Date().getDay()];
-    
-    const todaysHabits = habits.filter(h => 
-      h.schedule && h.schedule.includes(todayStr)
+
+    const todaysHabits = habits.filter(
+      (habit) => habit.schedule && habit.schedule.includes(todayStr)
     );
 
     res.json(todaysHabits);
@@ -36,7 +36,7 @@ router.get("/reminders", async (req, res) => {
   }
 });
 
-// POST /api/habits — create a new habit
+// POST /api/habits - create a new habit
 router.post("/", async (req, res) => {
   try {
     const { name, schedule, goal, hasReminder, reminderTime } = req.body;
@@ -60,11 +60,12 @@ router.post("/", async (req, res) => {
       const message = Object.values(err.errors)[0].message;
       return res.status(400).json({ error: message });
     }
+
     res.status(500).json({ error: "Failed to create habit" });
   }
 });
 
-// PUT /api/habits/:id — update an existing habit
+// PUT /api/habits/:id - update an existing habit
 router.put("/:id", async (req, res) => {
   try {
     const { name, schedule, goal, hasReminder, reminderTime } = req.body;
@@ -96,11 +97,12 @@ router.put("/:id", async (req, res) => {
       const message = Object.values(err.errors)[0].message;
       return res.status(400).json({ error: message });
     }
+
     res.status(500).json({ error: "Failed to update habit" });
   }
 });
 
-// DELETE /api/habits/:id — delete a habit
+// DELETE /api/habits/:id - delete a habit
 router.delete("/:id", async (req, res) => {
   try {
     const habit = await Habit.findOneAndDelete({
@@ -118,7 +120,7 @@ router.delete("/:id", async (req, res) => {
   }
 });
 
-// PATCH /api/habits/:id/complete — toggle today's completion
+// PATCH /api/habits/:id/complete - toggle today's completion
 router.patch("/:id/complete", async (req, res) => {
   try {
     const today = new Date().toISOString().split("T")[0];
