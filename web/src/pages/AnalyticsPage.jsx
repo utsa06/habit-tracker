@@ -64,7 +64,7 @@ function getInsightLine(range, overview) {
 }
 
 export default function AnalyticsPage() {
-  const { habits, isLoading, error, toggleCompletion } = useHabits();
+  const { habits, isLoading, error } = useHabits();
   const { notes, isLoading: notesLoading, createNote, deleteNote } = useNotes();
   const todayKey = getTodayKey();
   const [rangeType, setRangeType] = useState("week");
@@ -243,7 +243,7 @@ export default function AnalyticsPage() {
                       key={`${motionKey}:${habit.id}`}
                       habit={habit}
                       rangeType={rangeType}
-                      onToggleToday={toggleCompletion}
+                      onToggleToday={undefined}
                       index={index}
                     />
                   ))}
