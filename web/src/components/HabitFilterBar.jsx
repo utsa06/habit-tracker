@@ -12,6 +12,8 @@ const SORT_OPTIONS = [
 ];
 
 export default function HabitFilterBar({ filters, onChange }) {
+  const isFiltered = filters.status !== 'all' || filters.sortBy !== 'default';
+
   return (
     <div className="flex items-center gap-3 flex-wrap mb-5">
       {/* Status pills */}
@@ -48,13 +50,17 @@ export default function HabitFilterBar({ filters, onChange }) {
         </select>
       </div>
 
-      {/* Active filter indicator */}
-      {(filters.status !== 'all' || filters.sortBy !== 'default') && (
+      {/* Clear filters button */}
+      {isFiltered && (
         <button
           onClick={() => onChange({ status: 'all', sortBy: 'default' })}
-          className="text-xs text-purple-600 hover:text-purple-800 underline underline-offset-2"
+          title="Reset all filters and sorting"
+          className="ml-auto flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-red-50 border border-red-200 text-xs font-medium text-red-600 transition-all duration-200 hover:bg-red-100 hover:border-red-300 hover:text-red-700 active:scale-95 hover:shadow-sm focus:outline-none focus:ring-2 focus:ring-red-300 focus:ring-offset-1"
         >
-          Clear filters
+          <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+          <span>Clear</span>
         </button>
       )}
     </div>
