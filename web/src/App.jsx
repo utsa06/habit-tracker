@@ -6,6 +6,7 @@ import SigninPage from "./pages/SigninPage";
 import SignupPage from "./pages/SignupPage";
 import DashboardPage from "./pages/DashboardPage";
 import Habits from "./pages/Habits";
+import PlaceholderPage from "./pages/PlaceholderPage";
 import AnalyticsPage from "./pages/AnalyticsPage";
 
 function App() {
@@ -22,7 +23,8 @@ function App() {
         <Route element={<AppLayout />}>
           <Route path="/dashboard" element={<DashboardPage />} />
           <Route path="/habits" element={<Habits />} />
-          <Route path="/analytics" element={<AnalyticsPage />} />
+        <Route path="/analytics" element={<AnalyticsPage />} />
+        <Route path="/settings" element={<PlaceholderPage title="User Settings" />} />
         </Route>
       </Route>
 
