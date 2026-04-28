@@ -10,13 +10,14 @@ import NotesPanel from "../components/NotesPanel";
 import HabitFilterBar from "../components/HabitFilterBar";
 import ToastNotification from "../components/ToastNotification";
 import { useToast } from "../hooks/useToast";
+import { handleError } from "../utils/handleError";
 
 export default function Habits() {
   const [filters, setFilters] = useState({ status: 'all', sortBy: 'default' });
   const { habits, isLoading, error, fetchHabits, createHabit, updateHabit, deleteHabit, toggleCompletion } =
     useHabits(filters);
   const { notes, isLoading: notesLoading, createNote, deleteNote } = useNotes();
-  const { toast, showToast, clearToast } = useToast();
+  const { toasts, addToast, removeToast } = useToast();
 
   const [modalHabit, setModalHabit] = useState(null);
   const [showModal, setShowModal] = useState(false);
@@ -42,7 +43,7 @@ export default function Habits() {
       if (modalHabit) await updateHabit(modalHabit._id, data);
       else await createHabit(data);
     } catch (err) {
-      showToast(err.message || "Failed to save habit. Please try again.");
+      handleError(err, addToast, "Failed to save habit. Please try again.");
       throw err;
     }
   }
@@ -51,8 +52,8 @@ export default function Habits() {
     try {
       await deleteHabit(deleteTarget._id);
       setDeleteTarget(null);
-    } catch {
-      showToast("Failed to delete habit. Please try again.");
+    } catch (err) {
+      handleError(err, addToast, "Failed to delete habit. Please try again.");
       setDeleteTarget(null);
     }
   }
@@ -60,8 +61,8 @@ export default function Habits() {
   async function handleToggleToday(id) {
     try {
       await toggleCompletion(id);
-    } catch {
-      showToast("Failed to update habit. Please try again.");
+    } catch (err) {
+      handleError(err, addToast, "Failed to update habit. Please try again.");
     }
   }
 
@@ -95,7 +96,12 @@ export default function Habits() {
 
       {error ? (
         <div className="mb-4 rounded-2xl border border-danger-400/20 bg-white">
-          <ErrorMessage message="Couldn't load your habits." onRetry={fetchHabits} />
+          <ErrorMessage
+            title="Failed to load habits"
+            description="Check your connection or try refreshing your habits."
+            type="network"
+            onRetry={fetchHabits}
+          />
         </div>
       ) : null}
 
@@ -165,7 +171,7 @@ export default function Habits() {
           onCancel={() => setDeleteTarget(null)}
         />
       )}
-      <ToastNotification message={toast.message} type={toast.type} onDismiss={clearToast} />
+      <ToastNotification toasts={toasts} onDismiss={removeToast} />
     </div>
   );
 }

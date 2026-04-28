@@ -122,7 +122,12 @@ export default function Calendar() {
   if (error) {
     return (
       <div className="mx-auto max-w-[920px] rounded-2xl border border-danger-500/20 bg-white">
-        <ErrorMessage message="Couldn't load calendar data." onRetry={fetchHabits} />
+        <ErrorMessage
+          title="Failed to load calendar data"
+          description="Check your connection or try loading the calendar again."
+          type="network"
+          onRetry={fetchHabits}
+        />
       </div>
     );
   }

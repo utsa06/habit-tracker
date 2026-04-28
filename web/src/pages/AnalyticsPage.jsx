@@ -182,7 +182,12 @@ export default function AnalyticsPage() {
 
       {error ? (
         <div className="rounded-2xl border border-danger-500/20 bg-white">
-          <ErrorMessage message="Couldn't load analytics." onRetry={fetchHabits} />
+          <ErrorMessage
+            title="Failed to load analytics"
+            description="Check your connection or try loading your analytics again."
+            type="network"
+            onRetry={fetchHabits}
+          />
         </div>
       ) : null}
 

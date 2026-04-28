@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useNavigate } from "react-router-dom";
 
 const ICONS = {
@@ -31,7 +32,7 @@ const ICONS = {
   ),
 };
 
-export default function EmptyState({
+function EmptyState({
   icon = "habits",
   title,
   description,
@@ -76,3 +77,5 @@ export default function EmptyState({
     </div>
   );
 }
+
+export default memo(EmptyState);

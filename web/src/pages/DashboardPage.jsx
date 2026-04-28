@@ -21,7 +21,12 @@ export default function DashboardPage() {
   if (error) {
     return (
       <div className="rounded-2xl border border-danger-500/20 bg-white">
-        <ErrorMessage message="Couldn't load your dashboard." onRetry={fetchHabits} />
+        <ErrorMessage
+          title="Failed to load dashboard"
+          description="Check your connection or try loading the dashboard again."
+          type="network"
+          onRetry={fetchHabits}
+        />
       </div>
     );
   }

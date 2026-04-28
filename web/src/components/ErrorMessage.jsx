@@ -1,4 +1,30 @@
-export default function ErrorMessage({ message, onRetry }) {
+import { useState } from "react";
+
+export default function ErrorMessage({
+  title,
+  description,
+  message,
+  type = "server",
+  onRetry,
+}) {
+  const [isRetrying, setIsRetrying] = useState(false);
+  const fallbackDescriptions = {
+    network: "Check your internet connection, then try again.",
+    empty: "The server responded, but there was no data to show.",
+    server: "The server had trouble responding. Please try again.",
+  };
+
+  async function handleRetry() {
+    if (!onRetry || isRetrying) return;
+
+    setIsRetrying(true);
+    try {
+      await onRetry();
+    } finally {
+      setIsRetrying(false);
+    }
+  }
+
   return (
     <div className="flex flex-col items-center justify-center gap-3 px-4 py-10 text-center">
       <div className="flex h-10 w-10 items-center justify-center rounded-full bg-danger-400/10">
@@ -10,14 +36,20 @@ export default function ErrorMessage({ message, onRetry }) {
           />
         </svg>
       </div>
-      <p className="text-[13px] font-medium text-surface-700">{message || "Something went wrong."}</p>
+      <div>
+        <p className="text-[14px] font-semibold text-surface-800">{title || message || "Something went wrong."}</p>
+        <p className="mt-1 max-w-sm text-[13px] leading-5 text-surface-500">
+          {description || fallbackDescriptions[type] || fallbackDescriptions.server}
+        </p>
+      </div>
       {onRetry ? (
         <button
           type="button"
-          onClick={onRetry}
-          className="cursor-pointer text-[13px] font-medium text-accent-600 underline-offset-2 hover:underline"
+          onClick={handleRetry}
+          disabled={isRetrying}
+          className="cursor-pointer text-[13px] font-medium text-accent-600 underline-offset-2 hover:underline disabled:cursor-not-allowed disabled:text-surface-400 disabled:no-underline"
         >
-          Try again
+          {isRetrying ? "Trying..." : "Try again"}
         </button>
       ) : null}
     </div>
