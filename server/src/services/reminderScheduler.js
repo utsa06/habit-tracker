@@ -38,13 +38,13 @@ function getReminderWindow(timeZone = "UTC") {
 function configureWebPush() {
   const { VAPID_PUBLIC_KEY, VAPID_PRIVATE_KEY, VAPID_SUBJECT } = process.env;
 
-  if (!VAPID_PUBLIC_KEY || !VAPID_PRIVATE_KEY || !VAPID_SUBJECT) {
+  if (!VAPID_PUBLIC_KEY || !VAPID_PRIVATE_KEY) {
     console.warn("Push notifications are disabled: VAPID env vars are missing");
     return false;
   }
 
   webpush.setVapidDetails(
-    VAPID_SUBJECT,
+    VAPID_SUBJECT || "http://localhost:3000",
     VAPID_PUBLIC_KEY,
     VAPID_PRIVATE_KEY
   );
