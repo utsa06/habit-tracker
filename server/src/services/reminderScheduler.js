@@ -121,7 +121,6 @@ export function startReminderScheduler() {
   if (!configureWebPush()) {
     return;
   }
-
   cron.schedule("* * * * *", () => {
     sendDueReminders().catch((err) => {
       console.error("Reminder scheduler failed:", err.message);
