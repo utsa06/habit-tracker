@@ -4,6 +4,22 @@ import { validateFilterSort, filterAndSort } from "../utils/filterSort.js";
 
 const router = Router();
 
+function normalizeReminderFields({ hasReminder, reminderTime }) {
+  const reminderEnabled = Boolean(hasReminder);
+
+  if (!reminderEnabled) {
+    return { hasReminder: false, reminderTime: "" };
+  }
+
+  if (!reminderTime || !/^([01]\d|2[0-3]):([0-5]\d)$/.test(reminderTime)) {
+    return {
+      error: "Reminder time is required and must use HH:MM format",
+    };
+  }
+
+  return { hasReminder: true, reminderTime };
+}
+
 // GET /api/habits - list all habits for the authenticated user
 // Query params: status (all, completed, pending), sortBy (default, name, streak, lastCompleted)
 router.get("/", async (req, res) => {
@@ -31,12 +47,18 @@ router.get("/", async (req, res) => {
 });
 
 // GET /api/habits/reminders - list habits with reminders for the current day
+// Query params: scope=all returns every enabled reminder so the client can use local time.
 router.get("/reminders", async (req, res) => {
   try {
     const habits = await Habit.find({
       userId: req.userId,
       hasReminder: true,
+      reminderTime: { $ne: "" },
     });
+
+    if (req.query.scope === "all") {
+      return res.json(habits);
+    }
 
     const validDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
     const todayStr = validDays[new Date().getDay()];
@@ -54,10 +76,22 @@ router.get("/reminders", async (req, res) => {
 // POST /api/habits - create a new habit
 router.post("/", async (req, res) => {
   try {
-    const { name, schedule, goal, hasReminder, reminderTime } = req.body;
+    const {
+      name,
+      schedule,
+      goal,
+      hasReminder,
+      reminderTime,
+      reminderTimezone,
+    } = req.body;
 
     if (!name || !name.trim()) {
       return res.status(400).json({ error: "Name is required" });
+    }
+
+    const reminderFields = normalizeReminderFields({ hasReminder, reminderTime });
+    if (reminderFields.error) {
+      return res.status(400).json({ error: reminderFields.error });
     }
 
     const habit = await Habit.create({
@@ -65,8 +99,8 @@ router.post("/", async (req, res) => {
       name: name.trim(),
       schedule: schedule || [],
       goal: goal?.trim() || "",
-      hasReminder: hasReminder || false,
-      reminderTime: reminderTime || "",
+      reminderTimezone: reminderTimezone?.trim() || "UTC",
+      ...reminderFields,
     });
 
     res.status(201).json(habit);
@@ -83,28 +117,55 @@ router.post("/", async (req, res) => {
 // PUT /api/habits/:id - update an existing habit
 router.put("/:id", async (req, res) => {
   try {
-    const { name, schedule, goal, hasReminder, reminderTime } = req.body;
+    const {
+      name,
+      schedule,
+      goal,
+      hasReminder,
+      reminderTime,
+      reminderTimezone,
+    } = req.body;
 
     if (name !== undefined && !name.trim()) {
       return res.status(400).json({ error: "Name cannot be empty" });
+    }
+
+    const existingHabit = await Habit.findOne({
+      _id: req.params.id,
+      userId: req.userId,
+    });
+
+    if (!existingHabit) {
+      return res.status(404).json({ error: "Habit not found" });
+    }
+
+    const nextReminderState = {
+      hasReminder:
+        hasReminder !== undefined ? hasReminder : existingHabit.hasReminder,
+      reminderTime:
+        reminderTime !== undefined ? reminderTime : existingHabit.reminderTime,
+    };
+    const reminderFields = normalizeReminderFields(nextReminderState);
+
+    if (reminderFields.error) {
+      return res.status(400).json({ error: reminderFields.error });
     }
 
     const updates = {};
     if (name !== undefined) updates.name = name.trim();
     if (schedule !== undefined) updates.schedule = schedule;
     if (goal !== undefined) updates.goal = goal.trim();
-    if (hasReminder !== undefined) updates.hasReminder = hasReminder;
-    if (reminderTime !== undefined) updates.reminderTime = reminderTime;
+    if (reminderTimezone !== undefined) {
+      updates.reminderTimezone = reminderTimezone.trim() || "UTC";
+    }
+    updates.hasReminder = reminderFields.hasReminder;
+    updates.reminderTime = reminderFields.reminderTime;
 
     const habit = await Habit.findOneAndUpdate(
       { _id: req.params.id, userId: req.userId },
       updates,
       { returnDocument: "after", runValidators: true }
     );
-
-    if (!habit) {
-      return res.status(404).json({ error: "Habit not found" });
-    }
 
     res.json(habit);
   } catch (err) {
