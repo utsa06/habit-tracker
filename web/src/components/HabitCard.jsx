@@ -64,6 +64,16 @@ function calculateStreak(completions = [], today = new Date()) {
   return streak;
 }
 
+function formatReminderTime(time) {
+  if (!time) return "";
+
+  const [hours, minutes] = time.split(":").map(Number);
+  const period = hours >= 12 ? "PM" : "AM";
+  const displayHours = hours % 12 || 12;
+
+  return `${displayHours}:${String(minutes).padStart(2, "0")} ${period}`;
+}
+
 export default function HabitCard({ habit, onToggleToday, onEdit, onDelete }) {
   const today = new Date();
   const schedule = habit.schedule || [];
@@ -83,18 +93,28 @@ export default function HabitCard({ habit, onToggleToday, onEdit, onDelete }) {
   const streak = calculateStreak(completions, today);
 
   return (
-    <div className="group rounded-2xl border border-surface-200 dark:border-surface-700 bg-white dark:bg-surface-700 p-5 transition-all duration-200 hover:shadow-md hover:shadow-surface-200/60 dark:hover:shadow-black/30">
+    <div className="group rounded-2xl border p-5 transition-all duration-200 hover:shadow-md" style={{ backgroundColor: 'var(--bg-secondary)', borderColor: 'var(--border-color)' }}>
       <div className="mb-3 flex items-start justify-between gap-3">
         <div className="min-w-0">
-          <h3 className={`truncate text-[14px] font-semibold ${doneToday ? "line-through text-surface-400 dark:text-surface-500" : "text-surface-800 dark:text-surface-100"}`}>
+          <h3 className={`truncate text-[14px] font-semibold ${doneToday ? "line-through" : ""}`} style={{ color: doneToday ? 'var(--text-secondary)' : 'var(--text-primary)' }}>
             {habit.name}
           </h3>
-          {habit.goal && <p className="mt-0.5 truncate text-[12px] text-surface-400 dark:text-surface-500">{habit.goal}</p>}
+          <div className="mt-0.5 flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1">
+            {habit.goal && <p className="truncate text-[12px]" style={{ color: 'var(--text-secondary)' }}>{habit.goal}</p>}
+            {habit.hasReminder && habit.reminderTime && (
+              <span className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-medium text-accent-600" style={{ backgroundColor: 'var(--bg-tertiary)' }}>
+                <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                </svg>
+                {formatReminderTime(habit.reminderTime)}
+              </span>
+            )}
+          </div>
         </div>
 
         <div className="flex items-center gap-1.5">
           {streak > 0 && (
-            <span className="flex items-center gap-1 rounded-full bg-amber-50 px-2 py-0.5 text-[11px] font-medium text-amber-500">
+            <span className="flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-medium text-amber-500" style={{ backgroundColor: 'var(--bg-tertiary)' }}>
               <svg className="h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
                 <path
                   fillRule="evenodd"
@@ -113,9 +133,10 @@ export default function HabitCard({ habit, onToggleToday, onEdit, onDelete }) {
                 onClick={() => onToggleToday(habit._id)}
                 title={doneToday ? "Unmark today" : "Mark today as done"}
                 aria-label={doneToday ? "Unmark today" : "Mark today as done"}
-                className={`cursor-pointer rounded-lg p-1.5 transition-colors ${doneToday ? "text-white" : "text-gray-400 hover:text-green-500"}`}
+                className="cursor-pointer rounded-lg p-1.5 transition-colors"
+                style={{ color: doneToday ? 'white' : 'var(--text-secondary)' }}
               >
-                <span className={`flex h-7 w-7 items-center justify-center rounded-full border transition-colors ${doneToday ? "border-green-500 bg-green-500 text-white" : "border-gray-300 bg-transparent text-gray-400 hover:border-green-500 hover:text-green-500"}`}>
+                <span className={`flex h-7 w-7 items-center justify-center rounded-full border transition-colors ${doneToday ? "border-green-500 bg-green-500 text-white" : "border-gray-300 bg-transparent"}`} style={!doneToday ? { borderColor: 'var(--border-color)' } : {}}>
                   <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
                   </svg>
@@ -125,7 +146,8 @@ export default function HabitCard({ habit, onToggleToday, onEdit, onDelete }) {
 
             <button
               onClick={() => onEdit(habit)}
-              className="cursor-pointer rounded-lg p-1.5 text-surface-400 transition-colors hover:bg-surface-100 hover:text-surface-600"
+              className="cursor-pointer rounded-lg p-1.5 transition-colors"
+              style={{ color: 'var(--text-secondary)', backgroundColor: 'transparent' }}
               aria-label="Edit"
             >
               <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
@@ -135,7 +157,8 @@ export default function HabitCard({ habit, onToggleToday, onEdit, onDelete }) {
 
             <button
               onClick={() => onDelete(habit)}
-              className="cursor-pointer rounded-lg p-1.5 text-surface-400 transition-colors hover:bg-danger-400/10 hover:text-danger-500"
+              className="cursor-pointer rounded-lg p-1.5 transition-colors hover:bg-danger-400/10 hover:text-danger-500"
+              style={{ color: 'var(--text-secondary)' }}
               aria-label="Delete"
             >
               <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
@@ -153,7 +176,7 @@ export default function HabitCard({ habit, onToggleToday, onEdit, onDelete }) {
 
           return (
             <div key={`${habit._id}-${label}-${index}`} className="flex flex-col items-center gap-0.5">
-              <span className="text-[9px] font-medium text-surface-400">{label}</span>
+              <span className="text-[9px] font-medium" style={{ color: 'var(--text-secondary)' }}>{label}</span>
               <span className={`flex h-6 w-6 items-center justify-center rounded-full border-[1.5px] ${circleStyle}`}>
                 {dayState === "completed" && (
                   <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>

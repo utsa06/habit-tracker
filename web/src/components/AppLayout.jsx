@@ -6,6 +6,20 @@ import Sidebar from "./Sidebar";
 import TopNav from "./TopNav";
 import ReminderAlert from "./ReminderAlert";
 
+const DAY_NAMES = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+function getLocalDateKey(date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+
+  return `${year}-${month}-${day}`;
+}
+
+function getCompletionDateKey(date) {
+  return date.toISOString().split("T")[0];
+}
+
 export default function AppLayout() {
   const { token } = useAuth();
   const location = useLocation();
@@ -20,7 +34,7 @@ export default function AppLayout() {
         return;
       }
       try {
-        const data = await apiRequest("/api/habits/reminders", { token });
+        const data = await apiRequest("/api/habits/reminders?scope=all", { token });
         setReminders(data);
       } catch (err) {
         console.error("Failed to fetch reminders", err);
@@ -42,29 +56,48 @@ export default function AppLayout() {
       const currentHours = now.getHours().toString().padStart(2, "0");
       const currentMinutes = now.getMinutes().toString().padStart(2, "0");
       const currentTimeStr = `${currentHours}:${currentMinutes}`;
+      const todayName = DAY_NAMES[now.getDay()];
+      const todayKey = getLocalDateKey(now);
+      const completionKey = getCompletionDateKey(now);
+      const dueReminders = [];
 
       reminders.forEach((habit) => {
-        if (habit.reminderTime === currentTimeStr) {
-          const alertKey = `${habit._id}-${currentTimeStr}`;
+        const isScheduledToday = habit.schedule?.includes(todayName);
+        const completedToday = habit.completions?.includes(completionKey);
+
+        if (!completedToday && isScheduledToday && habit.reminderTime === currentTimeStr) {
+          const alertKey = `${habit._id}-${todayKey}-${currentTimeStr}`;
           if (!alertedRef.current.has(alertKey)) {
-            setAlertQueue((prev) => [...prev, habit]);
+            dueReminders.push(habit);
             alertedRef.current.add(alertKey);
           }
         }
       });
+
+      if (dueReminders.length > 0) {
+        setAlertQueue((prev) => {
+          const queuedIds = new Set(prev.map((habit) => habit._id));
+          const nextReminders = dueReminders.filter(
+            (habit) => !queuedIds.has(habit._id)
+          );
+
+          return [...prev, ...nextReminders];
+        });
+      }
     }, 1000);
 
     return () => clearInterval(interval);
   }, [reminders]);
 
-  const activeAlert = alertQueue[0] || null;
-
   return (
-    <div className="min-h-screen bg-surface-50 dark:bg-surface-800 transition-colors">
-      {activeAlert && (
+    <div className="min-h-screen" style={{ backgroundColor: 'var(--bg-primary)' }}>
+      {alertQueue.length > 0 && (
         <ReminderAlert 
-          habitName={activeAlert.name} 
-          onClose={() => setAlertQueue((prev) => prev.slice(1))} 
+          reminders={alertQueue}
+          onClose={(habitId) =>
+            setAlertQueue((prev) => prev.filter((habit) => habit._id !== habitId))
+          }
+          onCloseAll={() => setAlertQueue([])}
         />
       )}
       <Sidebar />

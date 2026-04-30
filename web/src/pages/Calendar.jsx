@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
-import { Link } from "react-router-dom";
+import EmptyState from "../components/EmptyState";
+import ErrorMessage from "../components/ErrorMessage";
 import HabitCalendarGrid from "../components/HabitCalendarGrid";
 import MonthNav from "../components/MonthNav";
 import { useHabits } from "../hooks/useHabits";
@@ -68,7 +69,7 @@ function isFutureMonth(year, month) {
 }
 
 export default function Calendar() {
-  const { habits, isLoading, error } = useHabits();
+  const { habits, isLoading, error, fetchHabits } = useHabits();
   const now = new Date();
   const [selectedId, setSelectedId] = useState(null);
   const [year, setYear] = useState(now.getUTCFullYear());
@@ -118,25 +119,47 @@ export default function Calendar() {
     );
   }
 
-  if (habits.length === 0 && !error) return <EmptyState />;
+  if (error) {
+    return (
+      <div className="mx-auto max-w-[920px] rounded-2xl border border-danger-500/20" style={{ backgroundColor: 'var(--bg-secondary)' }}>
+        <ErrorMessage
+          title="Failed to load calendar data"
+          description="Check your connection or try loading the calendar again."
+          type="network"
+          onRetry={fetchHabits}
+        />
+      </div>
+    );
+  }
+
+  if (habits.length === 0) {
+    return (
+      <div className="mx-auto max-w-xl rounded-[24px] shadow-[0_14px_32px_rgba(42,42,61,0.08)]" style={{ backgroundColor: 'var(--bg-secondary)' }}>
+        <EmptyState
+          icon="calendar"
+          title="Nothing to show yet"
+          description="Add a habit with a schedule to see your completion history here."
+          actionLabel="Add a habit"
+          actionPath="/habits"
+        />
+      </div>
+    );
+  }
 
   return (
-    <div className="mx-auto max-w-[920px] space-y-5">
+    <div className="mx-auto max-w-[920px] space-y-5" style={{ backgroundColor: 'var(--bg-primary)', color: 'var(--text-primary)' }}>
       <div>
-        <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-surface-400">Completion history</p>
-        <h1 className="mt-1 text-[24px] font-bold text-surface-900">Habit Calendar</h1>
-        <p className="mt-1 text-[13px] text-surface-500">View completed, missed, and upcoming scheduled days for each habit.</p>
+        <p className="text-[11px] font-semibold uppercase tracking-[0.18em]" style={{ color: 'var(--text-secondary)' }}>Completion history</p>
+        <h1 className="mt-1 text-[24px] font-bold" style={{ color: 'var(--text-primary)' }}>Habit Calendar</h1>
+        <p className="mt-1 text-[13px]" style={{ color: 'var(--text-secondary)' }}>View completed, missed, and upcoming scheduled days for each habit.</p>
       </div>
-
-      {error ? (
-        <div className="rounded-2xl border border-danger-500/20 bg-danger-500/10 px-4 py-3 text-[13px] text-danger-600">{error}</div>
-      ) : null}
 
       <div className="flex flex-wrap gap-2">
         <button
           type="button"
           onClick={() => setSelectedId(ALL_HABITS_ID)}
-          className={`cursor-pointer rounded-xl px-3 py-2 text-[13px] font-medium transition-colors ${isAllHabitsView ? "bg-accent-500 text-white shadow-sm shadow-accent-200" : "bg-white text-surface-600 hover:bg-surface-100"}`}
+          className={`cursor-pointer rounded-xl px-3 py-2 text-[13px] font-medium transition-colors ${isAllHabitsView ? "text-white shadow-sm" : "text-surface-600 hover:bg-surface-100"}`}
+          style={isAllHabitsView ? { backgroundColor: '#7c5cff' } : { backgroundColor: 'var(--bg-secondary)', color: 'var(--text-primary)' }}
         >
           All habits
         </button>
@@ -145,24 +168,25 @@ export default function Calendar() {
             key={habit._id}
             type="button"
             onClick={() => setSelectedId(habit._id)}
-            className={`cursor-pointer rounded-xl px-3 py-2 text-[13px] font-medium transition-colors ${!isAllHabitsView && selectedHabit?._id === habit._id ? "bg-accent-500 text-white shadow-sm shadow-accent-200" : "bg-white text-surface-600 hover:bg-surface-100"}`}
+            className={`cursor-pointer rounded-xl px-3 py-2 text-[13px] font-medium transition-colors ${!isAllHabitsView && selectedHabit?._id === habit._id ? "text-white shadow-sm" : "text-surface-600 hover:bg-surface-100"}`}
+            style={!isAllHabitsView && selectedHabit?._id === habit._id ? { backgroundColor: '#7c5cff' } : { backgroundColor: 'var(--bg-secondary)', color: 'var(--text-primary)' }}
           >
             {habit.name}
           </button>
         ))}
       </div>
 
-      <section className="rounded-[24px] bg-white p-4 shadow-[0_14px_32px_rgba(42,42,61,0.08)] sm:p-6">
-        <div className="sticky top-14 z-10 -mx-4 mb-4 border-b border-surface-100 bg-white px-4 pb-4 pt-1 sm:-mx-6 sm:px-6">
+      <section className="rounded-[24px] p-4 shadow-[0_14px_32px_rgba(42,42,61,0.08)] sm:p-6" style={{ backgroundColor: 'var(--bg-secondary)' }}>
+        <div className="sticky top-14 z-10 -mx-4 mb-4 border-b border-surface-100 bg-white px-4 pb-4 pt-1 sm:-mx-6 sm:px-6" style={{ backgroundColor: 'var(--bg-secondary)', borderColor: 'var(--border-color)' }}>
           <div className="mb-3 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
             <div className="min-h-[72px] min-w-0">
-              <h2 className="truncate text-[18px] font-semibold text-surface-900">
+              <h2 className="truncate text-[18px] font-semibold" style={{ color: 'var(--text-primary)' }}>
                 {isAllHabitsView ? "All habits" : selectedHabit?.name}
               </h2>
               {!isAllHabitsView && selectedHabit ? (
                 <HabitSubtitle habit={selectedHabit} stats={selectedStats} />
               ) : (
-                <p className="mt-1 text-[12px] text-surface-500">{habits.length} habits tracked this month</p>
+                <p className="mt-1 text-[12px]" style={{ color: 'var(--text-secondary)' }}>{habits.length} habits tracked this month</p>
               )}
             </div>
             <div className="shrink-0">
@@ -191,15 +215,15 @@ function HabitSubtitle({ habit, stats }) {
       <div className="flex flex-wrap gap-1.5">
         {schedule.length ? (
           schedule.map((day) => (
-            <span key={day} className="rounded-full bg-surface-100 px-2 py-0.5 text-[11px] font-medium text-surface-600">
+            <span key={day} className="rounded-full px-2 py-0.5 text-[11px] font-medium" style={{ backgroundColor: 'var(--bg-tertiary)', color: 'var(--text-secondary)' }}>
               {day}
             </span>
           ))
         ) : (
-          <span className="rounded-full bg-surface-100 px-2 py-0.5 text-[11px] font-medium text-surface-500">No schedule</span>
+          <span className="rounded-full px-2 py-0.5 text-[11px] font-medium" style={{ backgroundColor: 'var(--bg-tertiary)', color: 'var(--text-secondary)' }}>No schedule</span>
         )}
       </div>
-      <p className="text-[12px] text-surface-500">
+      <p className="text-[12px]" style={{ color: 'var(--text-secondary)' }}>
         {habit.completions?.length ?? 0} total completions | {stats?.completionRate ?? 0}% this month
       </p>
     </div>
@@ -208,7 +232,7 @@ function HabitSubtitle({ habit, stats }) {
 
 function StatsBar({ stats }) {
   return (
-    <div className="grid grid-cols-3 overflow-hidden rounded-xl border border-surface-100 bg-white shadow-sm">
+    <div className="grid grid-cols-3 overflow-hidden rounded-xl border bg-white shadow-sm" style={{ backgroundColor: 'var(--bg-secondary)', borderColor: 'var(--border-color)' }}>
       <StatItem label="Completed this month" value={stats.completedThisMonth} valueClassName="text-surface-900" />
       <StatItem
         label="Completion rate"
@@ -223,12 +247,12 @@ function StatsBar({ stats }) {
 
 function StatItem({ label, value, detail, valueClassName }) {
   return (
-    <div className="border-r border-surface-100 px-3 py-3 last:border-r-0">
+    <div className="border-r px-3 py-3 last:border-r-0" style={{ borderColor: 'var(--border-color)' }}>
       <p className={`text-2xl font-bold leading-none ${valueClassName}`}>
         {value}
-        {detail ? <span className="ml-1 text-[12px] font-semibold text-surface-400">| {detail}</span> : null}
+        {detail ? <span className="ml-1 text-[12px] font-semibold" style={{ color: 'var(--text-secondary)' }}>| {detail}</span> : null}
       </p>
-      <p className="mt-1 truncate text-xs text-surface-400">{label}</p>
+      <p className="mt-1 truncate text-xs" style={{ color: 'var(--text-secondary)' }}>{label}</p>
     </div>
   );
 }
@@ -242,9 +266,9 @@ function AllHabitsOverview({ habits, year, month }) {
   return (
     <div className="overflow-x-auto">
       <div className="min-w-[680px] space-y-2">
-        <div className="grid grid-cols-[150px_1fr] items-center text-[13px] font-semibold text-surface-400">
+        <div className="grid grid-cols-[150px_1fr] items-center text-[13px] font-semibold" style={{ color: 'var(--text-secondary)' }}>
           <span className="pr-3">Habit</span>
-          <div className="grid grid-flow-col auto-cols-fr gap-1 border-l border-surface-200 pl-3">
+          <div className="grid grid-flow-col auto-cols-fr gap-1 border-l pl-3" style={{ borderColor: 'var(--border-color)' }}>
             {rows[0]?.cells.map((cell) => (
               <span key={cell.dateStr} className="text-center">{cell.day}</span>
             ))}
@@ -252,8 +276,8 @@ function AllHabitsOverview({ habits, year, month }) {
         </div>
         {rows.map(({ habit, cells }) => (
           <div key={habit._id} className="grid grid-cols-[150px_1fr] items-center">
-            <span className="truncate pr-3 text-[12px] font-medium text-surface-700">{habit.name}</span>
-            <div className="grid grid-flow-col auto-cols-fr gap-1 border-l border-surface-100 pl-3">
+            <span className="truncate pr-3 text-[12px] font-medium" style={{ color: 'var(--text-primary)' }}>{habit.name}</span>
+            <div className="grid grid-flow-col auto-cols-fr gap-1 border-l pl-3" style={{ borderColor: 'var(--border-color)' }}>
               {cells.map((cell) => (
                 <span
                   key={cell.dateStr}
@@ -297,14 +321,3 @@ function LegendItem({ label, markerClassName }) {
   );
 }
 
-function EmptyState() {
-  return (
-    <div className="mx-auto max-w-xl rounded-[24px] bg-white px-6 py-16 text-center shadow-[0_14px_32px_rgba(42,42,61,0.08)]">
-      <h1 className="text-[20px] font-semibold text-surface-800">No habits yet</h1>
-      <p className="mx-auto mt-2 max-w-md text-[13px] leading-6 text-surface-500">Create a habit first, then its completion calendar will appear here.</p>
-      <Link to="/habits" className="mt-5 inline-flex rounded-xl bg-accent-500 px-4 py-2.5 text-[13px] font-medium text-white transition-colors hover:bg-accent-600">
-        Add a habit
-      </Link>
-    </div>
-  );
-}

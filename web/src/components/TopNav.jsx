@@ -10,15 +10,16 @@ export default function TopNav() {
     : "U";
 
   return (
-    <header className="fixed top-0 left-[220px] right-0 h-14 bg-white/80 dark:bg-surface-800/80 backdrop-blur-md border-b border-surface-200 dark:border-surface-700 flex items-center justify-between px-6 z-10 transition-colors">
+    <header className="fixed top-0 left-[220px] right-0 h-14 backdrop-blur-md border-b flex items-center justify-between px-6 z-10 transition-all" style={{ backgroundColor: 'var(--bg-primary)', borderColor: 'var(--border-color)' }}>
       <div />
       <div className="flex items-center gap-3">
         {user?.email && (
-          <span className="text-[12px] text-surface-400 dark:text-surface-500 hidden sm:block">{user.email}</span>
+          <span className="text-[12px] hidden sm:block" style={{ color: 'var(--text-secondary)' }}>{user.email}</span>
         )}
         <button
           onClick={toggleTheme}
-          className="cursor-pointer p-2 rounded-md hover:bg-surface-100 dark:hover:bg-surface-700 transition-colors text-surface-600 dark:text-surface-300"
+          className="cursor-pointer p-2 rounded-md transition-colors"
+          style={{ color: 'var(--text-secondary)' }}
           aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
           title={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
         >
@@ -28,12 +29,13 @@ export default function TopNav() {
             <SunIcon />
           )}
         </button>
-        <div className="w-8 h-8 rounded-full bg-accent-100 dark:bg-accent-900 text-accent-600 dark:text-accent-300 flex items-center justify-center text-[12px] font-bold">
+        <div className="w-8 h-8 rounded-full flex items-center justify-center text-[12px] font-bold" style={{ backgroundColor: 'var(--bg-tertiary)', color: 'var(--text-primary)' }}>
           {initials}
         </div>
         <button
           onClick={signout}
-          className="cursor-pointer text-[12px] text-surface-400 dark:text-surface-500 hover:text-surface-600 dark:hover:text-surface-300 transition-colors px-2 py-1.5 rounded-md hover:bg-surface-100 dark:hover:bg-surface-700"
+          className="cursor-pointer text-[12px] px-2 py-1.5 rounded-md transition-colors"
+          style={{ color: 'var(--text-secondary)' }}
           aria-label="Sign out"
         >
           Sign out

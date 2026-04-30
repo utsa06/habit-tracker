@@ -1,6 +1,8 @@
 import { useState } from "react";
 import HabitAnalyticsCard from "../components/HabitAnalyticsCard";
 import AnalyticsRangePicker from "../components/AnalyticsRangePicker";
+import EmptyState from "../components/EmptyState";
+import ErrorMessage from "../components/ErrorMessage";
 import NotesPanel from "../components/NotesPanel";
 import { useHabits } from "../hooks/useHabits";
 import { useNotes } from "../hooks/useNotes";
@@ -64,7 +66,7 @@ function getInsightLine(range, overview) {
 }
 
 export default function AnalyticsPage() {
-  const { habits, isLoading, error } = useHabits();
+  const { habits, isLoading, error, fetchHabits } = useHabits();
   const { notes, isLoading: notesLoading, createNote, deleteNote } = useNotes();
   const todayKey = getTodayKey();
   const [rangeType, setRangeType] = useState("week");
@@ -99,8 +101,8 @@ export default function AnalyticsPage() {
   }
 
   return (
-    <div className="mx-auto max-w-[980px] space-y-6">
-      <section className="space-y-4 rounded-[28px] bg-white p-4 shadow-[0_18px_40px_rgba(42,42,61,0.08)]">
+    <div className="mx-auto max-w-[980px] space-y-6" style={{ backgroundColor: 'var(--bg-primary)', color: 'var(--text-primary)' }}>
+      <section className="space-y-4 rounded-[28px] p-4 shadow-[0_18px_40px_rgba(42,42,61,0.08)]" style={{ backgroundColor: 'var(--bg-secondary)' }}>
         <div className="grid gap-4 lg:grid-cols-[minmax(0,1.3fr)_360px]">
           <div className="rounded-[28px] bg-gradient-to-br from-accent-600 via-accent-500 to-[#6f58ff] px-6 py-6 text-white shadow-[0_22px_42px_rgba(124,92,255,0.28)]">
             <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-white/75">
@@ -179,34 +181,43 @@ export default function AnalyticsPage() {
       </section>
 
       {error ? (
-        <div className="rounded-2xl border border-danger-500/20 bg-danger-500/10 px-4 py-3 text-[13px] text-danger-600">
-          {error}
+        <div className="rounded-2xl border border-danger-500/20" style={{ backgroundColor: 'var(--bg-secondary)' }}>
+          <ErrorMessage
+            title="Failed to load analytics"
+            description="Check your connection or try loading your analytics again."
+            type="network"
+            onRetry={fetchHabits}
+          />
         </div>
       ) : null}
 
       <div key={motionKey} className="animate-analytics-fade space-y-6">
         {range.isIncomplete ? (
           <EmptyState
+            icon="analytics"
             title="Select a time range to view analytics"
             description="Choose both a start date and an end date to calculate completion insights."
           />
         ) : habits.length === 0 ? (
           <EmptyState
-            title="No habits yet - start tracking to see insights"
+            icon="analytics"
+            title="No habits to analyse"
             description="Create your first habit and this dashboard will start turning raw completion history into useful feedback."
+            actionLabel="Go to My Habits"
+            actionPath="/habits"
           />
         ) : (
           <>
-            <section className="rounded-[24px] bg-white p-6 shadow-[0_14px_32px_rgba(42,42,61,0.08)]">
+            <section className="rounded-[24px] p-6 shadow-[0_14px_32px_rgba(42,42,61,0.08)]" style={{ backgroundColor: 'var(--bg-secondary)' }}>
               <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
                 <div>
-                  <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-surface-400">
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.18em]" style={{ color: 'var(--text-secondary)' }}>
                     Habit breakdown
                   </p>
-                  <h2 className="mt-1 text-[22px] font-semibold text-surface-900">
+                  <h2 className="mt-1 text-[22px] font-semibold" style={{ color: 'var(--text-primary)' }}>
                     Behavior feedback, not just raw numbers
                   </h2>
-                  <p className="mt-2 text-[14px] leading-6 text-surface-500">
+                  <p className="mt-2 text-[14px] leading-6" style={{ color: 'var(--text-secondary)' }}>
                     {getInsightLine(range, overview)}
                   </p>
                   <HabitLegend />
@@ -232,6 +243,7 @@ export default function AnalyticsPage() {
               {!range.hasPastWindow ? (
                 <div className="mt-5">
                   <EmptyState
+                    icon="analytics"
                     title="No activity in this range"
                     description="The selected custom range is entirely in the future, so there are no valid days to measure yet."
                   />
@@ -251,21 +263,22 @@ export default function AnalyticsPage() {
               )}
             </section>
 
-            <section className="rounded-[24px] bg-white p-5 shadow-[0_14px_32px_rgba(42,42,61,0.08)]">
+            <section className="rounded-[24px] p-5 shadow-[0_14px_32px_rgba(42,42,61,0.08)]" style={{ backgroundColor: 'var(--bg-secondary)' }}>
               <button
                 type="button"
                 onClick={() => setIsDetailsOpen((current) => !current)}
-                className="flex w-full items-center justify-between rounded-2xl bg-surface-50 px-4 py-3 text-left transition hover:bg-surface-100 active:scale-[0.99]"
+                className="flex w-full items-center justify-between rounded-2xl px-4 py-3 text-left transition hover:bg-surface-100 active:scale-[0.99]"
+                style={{ backgroundColor: 'var(--bg-tertiary)' }}
               >
                 <div>
-                  <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-surface-400">
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.18em]" style={{ color: 'var(--text-secondary)' }}>
                     Optional details
                   </p>
-                  <h2 className="mt-1 text-[18px] font-semibold text-surface-900">
+                  <h2 className="mt-1 text-[18px] font-semibold" style={{ color: 'var(--text-primary)' }}>
                     {isDetailsOpen ? "Hide supporting data" : "View supporting data, insight, and notes"}
                   </h2>
                 </div>
-                <span className="flex h-10 w-10 items-center justify-center rounded-full bg-white text-surface-500 shadow-sm shadow-surface-200/80">
+                <span className="flex h-10 w-10 items-center justify-center rounded-full shadow-sm" style={{ backgroundColor: 'var(--bg-primary)', color: 'var(--text-secondary)' }}>
                   <svg
                     className={`h-4 w-4 transition-transform ${isDetailsOpen ? "rotate-180" : ""}`}
                     fill="none"
@@ -286,10 +299,10 @@ export default function AnalyticsPage() {
                 <div className="grid gap-4 lg:grid-cols-[minmax(0,1.5fr)_minmax(280px,0.9fr)]">
                   <div className="rounded-[22px] bg-surface-50 p-5">
                     <div className="mb-4">
-                      <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-surface-400">
+                      <p className="text-[11px] font-semibold uppercase tracking-[0.18em]" style={{ color: 'var(--text-secondary)' }}>
                         Supporting data
                       </p>
-                      <h2 className="mt-1 text-[20px] font-semibold text-surface-900">
+                      <h2 className="mt-1 text-[20px] font-semibold" style={{ color: 'var(--text-primary)' }}>
                         Range details by habit
                       </h2>
                     </div>
@@ -297,7 +310,7 @@ export default function AnalyticsPage() {
                     <div className="overflow-x-auto">
                       <table className="min-w-full text-left text-[13px]">
                         <thead>
-                          <tr className="border-b border-surface-100 text-surface-400">
+                          <tr className="border-b text-surface-400" style={{ borderColor: 'var(--border-color)', color: 'var(--text-secondary)' }}>
                             <th className="pb-3 font-medium">Habit</th>
                             <th className="pb-3 font-medium">Schedule</th>
                             <th className="pb-3 font-medium">Completed</th>
@@ -308,13 +321,14 @@ export default function AnalyticsPage() {
                           {overview.habits.map((habit) => (
                             <tr
                               key={habit.id}
-                              className={`border-b border-surface-100 transition-colors last:border-b-0 hover:bg-white ${
+                              className={`border-b transition-colors last:border-b-0 hover:bg-white ${
                                 habit.completionPercentage === null ? "opacity-65" : ""
                               }`}
+                              style={{ borderColor: 'var(--border-color)' }}
                             >
-                              <td className="py-3 pr-3 font-medium text-surface-700">{habit.name}</td>
-                              <td className="py-3 pr-3 text-surface-500">{habit.scheduleLabel}</td>
-                              <td className="py-3 pr-3 text-surface-500">
+                              <td className="py-3 pr-3 font-medium" style={{ color: 'var(--text-primary)' }}>{habit.name}</td>
+                              <td className="py-3 pr-3" style={{ color: 'var(--text-secondary)' }}>{habit.scheduleLabel}</td>
+                              <td className="py-3 pr-3" style={{ color: 'var(--text-secondary)' }}>
                                 {habit.totalScheduledDays === 0
                                   ? "-- Not in range"
                                   : `${habit.completedScheduledDays}/${habit.totalScheduledDays}`}
@@ -375,12 +389,12 @@ function HeroMetric({ label, value }) {
 
 function SummaryCard({ label, value, helpText }) {
   return (
-    <div className="rounded-[20px] bg-white p-5 shadow-[0_12px_28px_rgba(42,42,61,0.07)]">
-      <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-surface-400">
+    <div className="rounded-[20px] p-5 shadow-[0_12px_28px_rgba(42,42,61,0.07)]" style={{ backgroundColor: 'var(--bg-secondary)' }}>
+      <p className="text-[11px] font-semibold uppercase tracking-[0.18em]" style={{ color: 'var(--text-secondary)' }}>
         {label}
       </p>
-      <div className="mt-3 text-[28px] font-bold tracking-tight text-surface-900">{value}</div>
-      <p className="mt-2 text-[13px] leading-5 text-surface-500">{helpText}</p>
+      <div className="mt-3 text-[28px] font-bold tracking-tight" style={{ color: 'var(--text-primary)' }}>{value}</div>
+      <p className="mt-2 text-[13px] leading-5" style={{ color: 'var(--text-secondary)' }}>{helpText}</p>
     </div>
   );
 }
@@ -409,7 +423,7 @@ function InsightCard({ title, metric, description }) {
 
 function HabitLegend() {
   return (
-    <div className="mt-4 flex flex-wrap gap-3 text-[12px] text-surface-500">
+    <div className="mt-4 flex flex-wrap gap-3 text-[12px]" style={{ color: 'var(--text-secondary)' }}>
       <LegendItem label="Completed" className="border-accent-500 bg-accent-500" />
       <LegendItem label="Missed" className="border-danger-400/50 bg-danger-400/10" />
       <LegendItem label="Future" className="border-surface-200 bg-surface-50" />
@@ -419,20 +433,10 @@ function HabitLegend() {
 
 function LegendItem({ label, className }) {
   return (
-    <span className="inline-flex items-center gap-2 rounded-full bg-surface-50 px-2.5 py-1">
+    <span className="inline-flex items-center gap-2 rounded-full px-2.5 py-1" style={{ backgroundColor: 'var(--bg-tertiary)' }}>
       <span className={`h-2.5 w-2.5 rounded-full border ${className}`} />
       {label}
     </span>
   );
 }
 
-function EmptyState({ title, description }) {
-  return (
-    <div className="rounded-[20px] bg-white px-6 py-14 text-center shadow-[0_12px_28px_rgba(42,42,61,0.06)]">
-      <h2 className="text-[18px] font-semibold text-surface-800">{title}</h2>
-      <p className="mx-auto mt-2 max-w-xl text-[13px] leading-6 text-surface-500">
-        {description}
-      </p>
-    </div>
-  );
-}
