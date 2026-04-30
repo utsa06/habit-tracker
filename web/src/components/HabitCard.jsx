@@ -83,13 +83,13 @@ export default function HabitCard({ habit, onToggleToday, onEdit, onDelete }) {
   const streak = calculateStreak(completions, today);
 
   return (
-    <div className="group rounded-2xl border border-surface-200 bg-white p-5 transition-shadow duration-200 hover:shadow-md hover:shadow-surface-200/60">
+    <div className="group rounded-2xl border border-surface-200 dark:border-surface-700 bg-white dark:bg-surface-700 p-5 transition-all duration-200 hover:shadow-md hover:shadow-surface-200/60 dark:hover:shadow-black/30">
       <div className="mb-3 flex items-start justify-between gap-3">
         <div className="min-w-0">
-          <h3 className={`truncate text-[14px] font-semibold ${doneToday ? "line-through text-surface-400" : "text-surface-800"}`}>
+          <h3 className={`truncate text-[14px] font-semibold ${doneToday ? "line-through text-surface-400 dark:text-surface-500" : "text-surface-800 dark:text-surface-100"}`}>
             {habit.name}
           </h3>
-          {habit.goal && <p className="mt-0.5 truncate text-[12px] text-surface-400">{habit.goal}</p>}
+          {habit.goal && <p className="mt-0.5 truncate text-[12px] text-surface-400 dark:text-surface-500">{habit.goal}</p>}
         </div>
 
         <div className="flex items-center gap-1.5">

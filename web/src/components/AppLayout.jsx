@@ -60,7 +60,7 @@ export default function AppLayout() {
   const activeAlert = alertQueue[0] || null;
 
   return (
-    <div className="min-h-screen bg-surface-50">
+    <div className="min-h-screen bg-surface-50 dark:bg-surface-800 transition-colors">
       {activeAlert && (
         <ReminderAlert 
           habitName={activeAlert.name} 

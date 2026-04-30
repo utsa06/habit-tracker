@@ -13,8 +13,8 @@ export default function DashboardPage() {
   return (
     <div>
       <div className="mb-6">
-        <h1 className="text-xl font-bold text-surface-800">Dashboard</h1>
-        <p className="text-[13px] text-surface-400 mt-1">Your habits at a glance</p>
+        <h1 className="text-xl font-bold text-surface-800 dark:text-surface-100">Dashboard</h1>
+        <p className="text-[13px] text-surface-400 dark:text-surface-500 mt-1">Your habits at a glance</p>
       </div>
 
       <div className="grid grid-cols-3 gap-4 mb-6">
@@ -23,17 +23,17 @@ export default function DashboardPage() {
         <StatCard label="Completion" value={`${completionPct}%`} icon={PctIcon} />
       </div>
 
-      <div className="bg-white rounded-2xl border border-surface-200 p-8 text-center">
-        <div className="mx-auto mb-4 w-14 h-14 rounded-2xl bg-accent-50 flex items-center justify-center">
-          <svg className="w-6 h-6 text-accent-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+      <div className="bg-white dark:bg-surface-700 rounded-2xl border border-surface-200 dark:border-surface-600 p-8 text-center transition-colors">
+        <div className="mx-auto mb-4 w-14 h-14 rounded-2xl bg-accent-50 dark:bg-accent-900/20 flex items-center justify-center">
+          <svg className="w-6 h-6 text-accent-500 dark:text-accent-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
           </svg>
         </div>
-        <h2 className="text-[16px] font-semibold text-surface-800 mb-1">Ready to build your routine?</h2>
-        <p className="text-[13px] text-surface-400 mb-5">Track your daily habits and build lasting consistency.</p>
+        <h2 className="text-[16px] font-semibold text-surface-800 dark:text-surface-100 mb-1">Ready to build your routine?</h2>
+        <p className="text-[13px] text-surface-400 dark:text-surface-500 mb-5">Track your daily habits and build lasting consistency.</p>
         <button
           onClick={() => navigate("/habits")}
-          className="cursor-pointer bg-accent-500 hover:bg-accent-600 text-white text-[13px] font-medium px-5 py-2.5 rounded-xl transition-colors shadow-sm shadow-accent-200"
+          className="cursor-pointer bg-accent-500 hover:bg-accent-600 text-white text-[13px] font-medium px-5 py-2.5 rounded-xl transition-colors shadow-sm shadow-accent-200 dark:shadow-black/30"
         >
           Track my habits
         </button>
@@ -44,13 +44,13 @@ export default function DashboardPage() {
 
 function StatCard({ label, value, icon: Icon }) {
   return (
-    <div className="bg-white rounded-2xl border border-surface-200 p-4 flex items-center gap-3">
-      <div className="w-10 h-10 rounded-xl bg-accent-50 flex items-center justify-center shrink-0">
+    <div className="bg-white dark:bg-surface-700 rounded-2xl border border-surface-200 dark:border-surface-600 p-4 flex items-center gap-3 transition-colors">
+      <div className="w-10 h-10 rounded-xl bg-accent-50 dark:bg-accent-900/20 flex items-center justify-center shrink-0">
         <Icon />
       </div>
       <div>
-        <p className="text-[20px] font-bold text-surface-800 leading-tight">{value}</p>
-        <p className="text-[11px] text-surface-400">{label}</p>
+        <p className="text-[20px] font-bold text-surface-800 dark:text-surface-100 leading-tight">{value}</p>
+        <p className="text-[11px] text-surface-400 dark:text-surface-500">{label}</p>
       </div>
     </div>
   );

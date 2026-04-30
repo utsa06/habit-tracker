@@ -46,12 +46,12 @@ export default function HabitModal({ habit, onSave, onClose }) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-[2px]">
-      <div className="w-full max-w-md mx-4 bg-white rounded-2xl border border-surface-200 shadow-xl">
-        <div className="px-6 pt-6 pb-4 flex items-center justify-between">
-          <h2 className="text-[16px] font-semibold text-surface-800">
+      <div className="w-full max-w-md mx-4 bg-white dark:bg-surface-700 rounded-2xl border border-surface-200 dark:border-surface-600 shadow-xl">
+        <div className="px-6 pt-6 pb-4 flex items-center justify-between border-b border-surface-200 dark:border-surface-600">
+          <h2 className="text-[16px] font-semibold text-surface-800 dark:text-surface-100">
             {isEditing ? "Edit Habit" : "New Habit"}
           </h2>
-          <button onClick={onClose} className="cursor-pointer p-1.5 rounded-lg text-surface-400 hover:text-surface-600 hover:bg-surface-100 transition-colors" aria-label="Close">
+          <button onClick={onClose} className="cursor-pointer p-1.5 rounded-lg text-surface-400 dark:text-surface-500 hover:text-surface-600 dark:hover:text-surface-300 hover:bg-surface-100 dark:hover:bg-surface-600 transition-colors" aria-label="Close">
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
             </svg>
@@ -64,20 +64,20 @@ export default function HabitModal({ habit, onSave, onClose }) {
           )}
 
           <div>
-            <label htmlFor="habit-name" className="block text-[13px] font-medium text-surface-600 mb-1.5">Habit name</label>
+            <label htmlFor="habit-name" className="block text-[13px] font-medium text-surface-600 dark:text-surface-400 mb-1.5">Habit name</label>
             <input id="habit-name" type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. Morning run"
-              className="w-full text-[13px] border border-surface-200 rounded-xl px-3.5 py-2.5 text-surface-800 placeholder-surface-400 outline-none focus:border-accent-400 focus:ring-2 focus:ring-accent-100 transition-all" autoFocus />
+              className="w-full text-[13px] border border-surface-200 dark:border-surface-600 dark:bg-surface-600 rounded-xl px-3.5 py-2.5 text-surface-800 dark:text-surface-100 placeholder-surface-400 dark:placeholder-surface-500 outline-none focus:border-accent-400 dark:focus:border-accent-500 focus:ring-2 focus:ring-accent-100 dark:focus:ring-accent-900/30 transition-all" autoFocus />
           </div>
 
           <div>
-            <span className="block text-[13px] font-medium text-surface-600 mb-2">Schedule</span>
+            <span className="block text-[13px] font-medium text-surface-600 dark:text-surface-400 mb-2">Schedule</span>
             <div className="flex gap-1.5">
               {WEEKDAYS.map((day) => (
                 <button key={day} type="button" onClick={() => toggleDay(day)}
                   className={`cursor-pointer flex-1 text-[12px] py-1.5 rounded-lg transition-all ${
                     schedule.includes(day)
                       ? "bg-accent-500 text-white shadow-sm shadow-accent-200"
-                      : "border border-surface-200 text-surface-500 hover:border-surface-300 hover:bg-surface-50"
+                      : "border border-surface-200 dark:border-surface-600 text-surface-500 dark:text-surface-400 hover:border-surface-300 dark:hover:border-surface-500 hover:bg-surface-50 dark:hover:bg-surface-600"
                   }`}>
                   {day}
                 </button>
@@ -86,20 +86,20 @@ export default function HabitModal({ habit, onSave, onClose }) {
           </div>
 
           <div>
-            <label htmlFor="habit-goal" className="block text-[13px] font-medium text-surface-600 mb-1.5">
-              Goal <span className="text-surface-400 font-normal">(optional)</span>
+            <label htmlFor="habit-goal" className="block text-[13px] font-medium text-surface-600 dark:text-surface-400 mb-1.5">
+              Goal <span className="text-surface-400 dark:text-surface-500 font-normal">(optional)</span>
             </label>
             <textarea id="habit-goal" value={goal} onChange={(e) => setGoal(e.target.value)} placeholder="e.g. Run 5km every session" rows={2}
-              className="w-full text-[13px] border border-surface-200 rounded-xl px-3.5 py-2.5 text-surface-800 placeholder-surface-400 outline-none focus:border-accent-400 focus:ring-2 focus:ring-accent-100 transition-all resize-none" />
+              className="w-full text-[13px] border border-surface-200 dark:border-surface-600 dark:bg-surface-600 rounded-xl px-3.5 py-2.5 text-surface-800 dark:text-surface-100 placeholder-surface-400 dark:placeholder-surface-500 outline-none focus:border-accent-400 dark:focus:border-accent-500 focus:ring-2 focus:ring-accent-100 dark:focus:ring-accent-900/30 transition-all resize-none" />
           </div>
 
           <div>
             <div className="flex items-center justify-between mb-2">
-              <span className="text-[13px] font-medium text-surface-600">Enable reminder</span>
+              <span className="text-[13px] font-medium text-surface-600 dark:text-surface-400">Enable reminder</span>
               <button 
                 type="button"
                 onClick={() => setHasReminder(!hasReminder)}
-                className={`cursor-pointer relative inline-flex h-5 w-9 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-accent-500 focus:ring-offset-2 ${hasReminder ? 'bg-accent-500' : 'bg-surface-300'}`}
+                className={`cursor-pointer relative inline-flex h-5 w-9 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-accent-500 focus:ring-offset-2 dark:focus:ring-offset-surface-700 ${hasReminder ? 'bg-accent-500' : 'bg-surface-300 dark:bg-surface-600'}`}
               >
                 <span className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white transition-transform ${hasReminder ? 'translate-x-[18px]' : 'translate-x-1'}`} />
               </button>
@@ -107,15 +107,15 @@ export default function HabitModal({ habit, onSave, onClose }) {
             
             {hasReminder && (
               <div className="mt-2 animate-in fade-in slide-in-from-top-1 duration-200">
-                <label htmlFor="reminder-time" className="block text-[13px] font-medium text-surface-600 mb-1.5">Reminder time</label>
+                <label htmlFor="reminder-time" className="block text-[13px] font-medium text-surface-600 dark:text-surface-400 mb-1.5">Reminder time</label>
                 <input id="reminder-time" type="time" value={reminderTime} onChange={(e) => setReminderTime(e.target.value)}
-                  className="w-full text-[14px] border border-surface-200 rounded-xl px-3.5 py-2.5 text-surface-800 placeholder-surface-400 outline-none focus:border-accent-400 focus:ring-2 focus:ring-accent-100 transition-all [&::-webkit-datetime-edit]:outline-none [&::-webkit-datetime-edit-fields-wrapper]:outline-none [&::-webkit-datetime-edit-hour-field]:focus:bg-accent-100 [&::-webkit-datetime-edit-minute-field]:focus:bg-accent-100 [&::-webkit-datetime-edit-hour-field]:focus:text-accent-700 [&::-webkit-datetime-edit-minute-field]:focus:text-accent-700" />
+                  className="w-full text-[14px] border border-surface-200 dark:border-surface-600 dark:bg-surface-600 rounded-xl px-3.5 py-2.5 text-surface-800 dark:text-surface-100 placeholder-surface-400 dark:placeholder-surface-500 outline-none focus:border-accent-400 dark:focus:border-accent-500 focus:ring-2 focus:ring-accent-100 dark:focus:ring-accent-900/30 transition-all [&::-webkit-datetime-edit]:outline-none [&::-webkit-datetime-edit-fields-wrapper]:outline-none [&::-webkit-datetime-edit-hour-field]:focus:bg-accent-100 [&::-webkit-datetime-edit-minute-field]:focus:bg-accent-100 [&::-webkit-datetime-edit-hour-field]:focus:text-accent-700 [&::-webkit-datetime-edit-minute-field]:focus:text-accent-700" />
               </div>
             )}
           </div>
 
           <div className="flex justify-end gap-2.5 pt-2">
-            <button type="button" onClick={onClose} className="cursor-pointer text-[13px] px-4 py-2 rounded-xl border border-surface-200 text-surface-600 hover:bg-surface-50 transition-all">Cancel</button>
+            <button type="button" onClick={onClose} className="cursor-pointer text-[13px] px-4 py-2 rounded-xl border border-surface-200 dark:border-surface-600 text-surface-600 dark:text-surface-400 hover:bg-surface-50 dark:hover:bg-surface-600 transition-all">Cancel</button>
             <button type="submit" disabled={isSaving}
               className="cursor-pointer text-[13px] font-medium px-5 py-2 rounded-xl bg-accent-500 text-white shadow-sm shadow-accent-200 hover:bg-accent-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed">
               {isSaving ? "Saving…" : isEditing ? "Save Changes" : "Create Habit"}

@@ -11,7 +11,7 @@ export default function DeleteConfirm({ habitName, onConfirm, onCancel }) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-[2px]">
-      <div className="w-full max-w-sm mx-4 bg-white rounded-2xl border border-surface-200 shadow-xl p-6">
+      <div className="w-full max-w-sm mx-4 bg-white dark:bg-surface-700 rounded-2xl border border-surface-200 dark:border-surface-600 shadow-xl p-6">
         <div className="flex items-center gap-3 mb-4">
           <div className="w-10 h-10 rounded-full bg-danger-400/10 flex items-center justify-center">
             <svg className="w-5 h-5 text-danger-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
@@ -19,18 +19,18 @@ export default function DeleteConfirm({ habitName, onConfirm, onCancel }) {
             </svg>
           </div>
           <div>
-            <h2 className="text-[15px] font-semibold text-surface-800">Delete Habit</h2>
-            <p className="text-[12px] text-surface-400">This action cannot be undone</p>
+            <h2 className="text-[15px] font-semibold text-surface-800 dark:text-surface-100">Delete Habit</h2>
+            <p className="text-[12px] text-surface-400 dark:text-surface-500">This action cannot be undone</p>
           </div>
         </div>
 
-        <p className="text-[13px] text-surface-500 mb-6 pl-[52px]">
-          Are you sure you want to delete <span className="font-semibold text-surface-700">{habitName}</span>?
+        <p className="text-[13px] text-surface-500 dark:text-surface-400 mb-6 pl-[52px]">
+          Are you sure you want to delete <span className="font-semibold text-surface-700 dark:text-surface-200">{habitName}</span>?
         </p>
 
         <div className="flex justify-end gap-2.5">
           <button type="button" onClick={onCancel} disabled={isDeleting}
-            className="cursor-pointer text-[13px] px-4 py-2 rounded-xl border border-surface-200 text-surface-600 hover:bg-surface-50 transition-all disabled:opacity-50">
+            className="cursor-pointer text-[13px] px-4 py-2 rounded-xl border border-surface-200 dark:border-surface-600 text-surface-600 dark:text-surface-400 hover:bg-surface-50 dark:hover:bg-surface-600 transition-all disabled:opacity-50">
             Cancel
           </button>
           <button type="button" onClick={handleDelete} disabled={isDeleting}

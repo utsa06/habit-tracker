@@ -7,7 +7,7 @@ export default function ProgressBar({ value }) {
 
   return (
     <div className="flex items-center gap-2.5">
-      <div className="flex-1 h-1.5 rounded-full bg-surface-200 overflow-hidden">
+      <div className="flex-1 h-1.5 rounded-full bg-surface-200 dark:bg-surface-600 overflow-hidden">
         <div
           className={`h-full rounded-full transition-all duration-500 ease-out ${
             pct === 100 ? "bg-success-500" : "bg-accent-500"
@@ -19,7 +19,7 @@ export default function ProgressBar({ value }) {
           aria-valuemax={100}
         />
       </div>
-      <span className="text-[11px] font-medium text-surface-400 w-8 text-right">{pct}%</span>
+      <span className="text-[11px] font-medium text-surface-400 dark:text-surface-500 w-8 text-right">{pct}%</span>
     </div>
   );
 }

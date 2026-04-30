@@ -35,9 +35,61 @@
 }
 
 @layer base {
+  :root {
+    /* Light mode colors */
+    --bg-primary: #ffffff;
+    --bg-secondary: #f7f7fb;
+    --bg-tertiary: #efefef;
+    
+    --text-primary: #1a1a2e;
+    --text-secondary: #3d3d54;
+    --text-tertiary: #6e6e85;
+    
+    --border-color: #e4e4ec;
+    --border-light: #f1f1f6;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      /* Dark mode colors */
+      --bg-primary: #1a1a2e;
+      --bg-secondary: #15151f;
+      --bg-tertiary: #0f0f17;
+      
+      --text-primary: #f7f7fb;
+      --text-secondary: #cbcbd6;
+      --text-tertiary: #9d9db0;
+      
+      --border-color: #2a2a3d;
+      --border-light: #24243d;
+    }
+  }
+
+  html.dark {
+    /* Dark mode colors */
+    --bg-primary: #1a1a2e;
+    --bg-secondary: #15151f;
+    --bg-tertiary: #0f0f17;
+    
+    --text-primary: #f7f7fb;
+    --text-secondary: #cbcbd6;
+    --text-tertiary: #9d9db0;
+    
+    --border-color: #2a2a3d;
+    --border-light: #24243d;
+  }
+
   body {
     @apply bg-surface-50 text-surface-700 antialiased;
     font-family: var(--font-sans);
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+    transition: background-color 0.2s, color 0.2s;
+  }
+
+  html.dark body {
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
   }
 }
 

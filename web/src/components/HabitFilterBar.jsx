@@ -20,15 +20,15 @@ export default function HabitFilterBar({ filters, onChange }) {
       {/* Control row */}
       <div className="flex items-center gap-2 flex-wrap">
         {/* Status pills */}
-        <div className="flex items-center gap-1.5 bg-gray-100 rounded-lg p-1 border border-gray-150">
+        <div className="flex items-center gap-1.5 bg-surface-100 dark:bg-surface-700 rounded-lg p-1 border border-surface-200 dark:border-surface-600">
           {STATUS_OPTIONS.map(opt => (
             <button
               key={opt.value}
               onClick={() => onChange({ ...filters, status: opt.value })}
               className={`px-3 py-1.5 rounded-md text-xs font-medium transition-all duration-150 cursor-pointer
                 ${filters.status === opt.value
-                  ? 'bg-purple-500 text-white shadow-md'
-                  : 'text-gray-500 hover:text-gray-700 hover:bg-white/50'}`}
+                  ? 'bg-accent-500 text-white shadow-md'
+                  : 'text-surface-500 dark:text-surface-400 hover:text-surface-700 dark:hover:text-surface-200 hover:bg-white/50 dark:hover:bg-surface-600/50'}`}
             >
               {opt.label}
             </button>
@@ -37,16 +37,16 @@ export default function HabitFilterBar({ filters, onChange }) {
 
         {/* Sort dropdown */}
         <div className="flex items-center gap-2 ml-auto">
-          <svg className="h-4 w-4 text-gray-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <svg className="h-4 w-4 text-surface-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
           </svg>
           <select
             value={filters.sortBy}
             onChange={e => onChange({ ...filters, sortBy: e.target.value })}
-            className="text-xs font-medium border border-gray-200 rounded-lg px-3 py-1.5 text-gray-700
-              bg-white cursor-pointer transition-all duration-200
-              hover:border-gray-300 hover:shadow-sm hover:bg-gray-50
-              focus:outline-none focus:ring-2 focus:ring-purple-400 focus:ring-offset-1 focus:border-transparent
+            className="text-xs font-medium border border-surface-200 dark:border-surface-600 rounded-lg px-3 py-1.5 text-surface-700 dark:text-surface-300
+              bg-white dark:bg-surface-700 cursor-pointer transition-all duration-200
+              hover:border-surface-300 dark:hover:border-surface-500 hover:shadow-sm hover:bg-surface-50 dark:hover:bg-surface-600
+              focus:outline-none focus:ring-2 focus:ring-accent-400 dark:focus:ring-accent-600 focus:ring-offset-1 dark:focus:ring-offset-surface-900 focus:border-transparent
               appearance-none pr-7"
             style={{
               backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e")`,

@@ -10,14 +10,14 @@ const NAV_ITEMS = [
 
 export default function Sidebar() {
   return (
-    <aside className="fixed left-0 top-0 bottom-0 w-[220px] bg-white border-r border-surface-200 flex flex-col z-20">
+    <aside className="fixed left-0 top-0 bottom-0 w-[220px] bg-white dark:bg-surface-800 border-r border-surface-200 dark:border-surface-700 flex flex-col z-20 transition-colors">
       <div className="px-5 py-5 flex items-center gap-2.5">
         <div className="w-8 h-8 rounded-lg bg-accent-500 flex items-center justify-center">
           <svg className="w-4.5 h-4.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
           </svg>
         </div>
-        <span className="text-[15px] font-bold text-surface-800 tracking-tight">Habitly</span>
+        <span className="text-[15px] font-bold text-surface-800 dark:text-surface-50 tracking-tight transition-colors">Habitly</span>
       </div>
 
       <nav className="flex-1 px-3 mt-2">
@@ -28,8 +28,8 @@ export default function Sidebar() {
             className={({ isActive }) =>
               `flex items-center gap-2.5 px-3 py-2 rounded-lg text-[13px] font-medium transition-colors mb-0.5 ${
                 isActive
-                  ? "bg-accent-50 text-accent-600"
-                  : "text-surface-500 hover:text-surface-700 hover:bg-surface-100"
+                  ? "bg-accent-50 dark:bg-accent-900/30 text-accent-600 dark:text-accent-400"
+                  : "text-surface-500 dark:text-surface-400 hover:text-surface-700 dark:hover:text-surface-200 hover:bg-surface-100 dark:hover:bg-surface-700"
               }`
             }
           >
@@ -39,8 +39,8 @@ export default function Sidebar() {
         ))}
       </nav>
 
-      <div className="px-5 py-4 border-t border-surface-200">
-        <p className="text-[11px] text-surface-400">© 2026 Habitly</p>
+      <div className="px-5 py-4 border-t border-surface-200 dark:border-surface-700">
+        <p className="text-[11px] text-surface-400 dark:text-surface-500">© 2026 Habitly</p>
       </div>
     </aside>
   );

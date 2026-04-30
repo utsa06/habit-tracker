@@ -8,26 +8,26 @@ function getCellStyle(cell) {
   }
 
   if (cell.isToday && cell.isCompleted) {
-    return "border-accent-500 bg-accent-500 text-white shadow-sm shadow-accent-200 ring-2 ring-accent-500";
+    return "border-accent-500 bg-accent-500 text-white shadow-sm shadow-accent-200 dark:shadow-black/30 ring-2 ring-accent-500";
   }
 
   if (cell.isToday) {
-    return "border-accent-400 bg-accent-50 font-semibold text-accent-700 ring-2 ring-accent-500";
+    return "border-accent-400 bg-accent-50 dark:bg-accent-900/20 font-semibold text-accent-700 dark:text-accent-400 ring-2 ring-accent-500";
   }
 
   if (cell.isCompleted) {
-    return "border-accent-500 bg-accent-500 text-white shadow-sm shadow-accent-200";
+    return "border-accent-500 bg-accent-500 text-white shadow-sm shadow-accent-200 dark:shadow-black/30";
   }
 
   if (cell.isFuture && cell.isScheduled) {
-    return "border-dashed border-surface-200 bg-surface-50 text-surface-300";
+    return "border-dashed border-surface-200 dark:border-surface-600 bg-surface-50 dark:bg-surface-700 text-surface-300 dark:text-surface-500";
   }
 
   if (cell.isScheduled) {
-    return "border-surface-100 bg-surface-50 text-surface-500";
+    return "border-surface-100 dark:border-surface-700 bg-surface-50 dark:bg-surface-700 text-surface-500 dark:text-surface-400";
   }
 
-  return "border-transparent bg-white text-surface-300";
+  return "border-transparent bg-white dark:bg-surface-700 text-surface-300 dark:text-surface-500";
 }
 
 export default function HabitCalendarGrid({ habit, year, month }) {
@@ -38,17 +38,17 @@ export default function HabitCalendarGrid({ habit, year, month }) {
     <div>
       <div className="mx-auto mb-1 grid max-w-[360px] grid-cols-7">
         {DAY_HEADERS.map((day) => (
-          <div key={day} className="py-1 text-center text-[11px] font-semibold text-surface-400">
+          <div key={day} className="py-1 text-center text-[11px] font-semibold text-surface-400 dark:text-surface-500">
             {day}
           </div>
         ))}
       </div>
 
-      <div className="mx-auto mb-3 flex max-w-[360px] flex-wrap items-center gap-3 border-b border-surface-100 pb-3 text-[11px] text-surface-500">
+      <div className="mx-auto mb-3 flex max-w-[360px] flex-wrap items-center gap-3 border-b border-surface-100 dark:border-surface-700 pb-3 text-[11px] text-surface-500 dark:text-surface-400">
         <LegendItem label="Completed" markerClassName="bg-accent-500" />
         <LegendItem label="Missed" markerClassName="bg-danger-400" />
-        <LegendItem label="Not scheduled" markerClassName="bg-surface-300" />
-        <LegendItem label="Today" markerClassName="border border-accent-400 bg-white" />
+        <LegendItem label="Not scheduled" markerClassName="bg-surface-300 dark:bg-surface-600" />
+        <LegendItem label="Today" markerClassName="border border-accent-400 bg-white dark:bg-surface-700" />
       </div>
 
       {hasHabitData ? (
@@ -66,7 +66,7 @@ export default function HabitCalendarGrid({ habit, year, month }) {
           ))}
         </div>
       ) : (
-        <div className="mx-auto flex max-w-[360px] items-center justify-center rounded-xl border border-dashed border-surface-200 bg-surface-50 px-4 py-12 text-center text-[13px] text-surface-500">
+        <div className="mx-auto flex max-w-[360px] items-center justify-center rounded-xl border border-dashed border-surface-200 dark:border-surface-600 bg-surface-50 dark:bg-surface-700 px-4 py-12 text-center text-[13px] text-surface-500 dark:text-surface-400">
           No data - this habit did not exist yet.
         </div>
       )}
